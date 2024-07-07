@@ -5,16 +5,19 @@ fetch("dictionary.json").then(response => response.json()).then(data => {
         console.error("Error cargando el archivo JSON:", error);
 });
 
-function escapeRegExp(string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
-}
-
 function highlightWords(text, language) {
+    if (!json) {
+        return text;
+    }
     Object.values(json).forEach(wordObj => {
-        const word = wordObj.name[language];
+        const names = wordObj.name[language];
+        const words = Array.isArray(names) ? names : [names];
         const color = wordObj.color;
-        const regex = new RegExp(`\\b(${escapeRegExp(word)})\\b`, 'gi');
-        text = text.replace(regex, `<span style="color: rgb(${color});">$1</span>`);
+
+        words.forEach(word => {
+            const regex = new RegExp(`\\b(${word})\\b`, 'gi');
+            text = text.replace(regex, `<span style="color: rgb(${color});">$1</span>`);
+        });
     });
     return text;
 }
