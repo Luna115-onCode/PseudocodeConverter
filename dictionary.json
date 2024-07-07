@@ -1,0 +1,23 @@
+{
+    "endIf": {
+        "name": {
+            "es": "terminar si",
+            "en": "end"
+        },
+        "color": "255, 0, 0"
+    },
+    "if": {
+        "name": {
+            "es": "si",
+            "en": "if"
+        },
+        "color": "70, 148, 28"
+    },
+    "while": {
+        "name": {
+            "es": "cuando",
+            "en": "while"
+        },
+        "color": "20, 186, 181"
+    }
+}
