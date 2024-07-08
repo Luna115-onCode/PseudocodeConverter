@@ -1,9 +1,18 @@
-var json, lang = "es";
+var json, lang = "es", progLang = "python";
+
 fetch("dictionary.json").then(response => response.json()).then(data => {
         json = data;
     }).catch(error => {
         console.error("Error cargando el archivo JSON:", error);
 });
+
+function ConvertCode() {
+    switch (progLang) {
+        case "python":
+            ConverToPython(json, document.getElementById("inputTextarea").value);
+        break;
+    }
+}
 
 function highlightWords(text, language) {
     if (!json) {
