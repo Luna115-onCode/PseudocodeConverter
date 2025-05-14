@@ -1,0 +1,19 @@
+<div class="container">
+  <mat-card appearance="outlined">
+    <mat-card-content [innerHTML]="cleanHighlightedText" contentEditable="true" (blur)="onInputChange($event)"></mat-card-content>
+  </mat-card>
+  <mat-grid-list cols="3" rowHeight="3:1">
+    <mat-grid-tile>
+      <button mat-flat-button (click)="convertCode()">
+        {{tools.locations?.['buttons']?.['convertCode']?.[tools.lang]}}
+      </button>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <p>{{tools.locations?.['settings']?.['changeLanguage']?.[tools.lang]}}: {{tools.lang}}</p>
+    </mat-grid-tile>
+    <mat-grid-tile>
+      <button mat-flat-button (click)="changeLanguage()">{{tools.locations?.['settings']?.['changeLanguage']?.[tools.lang]}}</button>
+    </mat-grid-tile>
+  </mat-grid-list>
+  <div class="mb-3 background-white form-control" id="outputCode"></div>
+</div>

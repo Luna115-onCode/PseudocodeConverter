@@ -1,0 +1,55 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - release
+      - testing
+      - development
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the application
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        run: |
+            git config --global user.name "${{ github.actor }}"
+            git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+            git fetch origin gh-pages
+            git checkout gh-pages
+
+            if [ "${{ github.ref }}" = "refs/heads/release" ]; then
+                find . -maxdepth 1 ! -name 'test' ! -name 'development' ! -name '.' ! -name '..' ! -name 'readme.md' ! -name 'LICENSE' -exec rm -rf {} +
+            elif [ "${{ github.ref }}" = "refs/heads/testing" ]; then
+                rm -rf test/*
+            else
+                rm -rf development/*
+            fi
+
+            if [ "${{ github.ref }}" = "refs/heads/release" ]; then
+                cp -r dist/* .
+            elif [ "${{ github.ref }}" = "refs/heads/testing" ]; then
+                mkdir -p test
+                cp -r dist/* test/
+            else
+                mkdir -p development
+                cp -r dist/* development/
+            fi
+
+            git add .
+            git commit -m "Deploy #${{ github.run_number }} from ${{ github.ref }} branch"
+            git push origin gh-pages --force
