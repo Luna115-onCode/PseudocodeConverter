@@ -58,7 +58,9 @@ jobs:
             fi
 
       - name: Deploy to GitHub Pages
-        run: |
-            git add .
-            git commit -m "Deploy #${{ github.run_number }} from ${{ github.ref }} branch"
-            git push origin gh-pages --force
+        uses: dfm/force-push-branch-action@v1.1
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: .
+          target-branch: gh-pages
+          commit-message: "Deploy #${{ github.run_number }} from ${{ github.ref }} branch"
