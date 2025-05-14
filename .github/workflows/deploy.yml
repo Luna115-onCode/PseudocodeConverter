@@ -17,7 +17,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: latest
+
+      - name: Install Angular CLI
+        run: npm install -g @angular/cli
 
       - name: Install dependencies
         run: npm install
@@ -25,13 +28,15 @@ jobs:
       - name: Build the application
         run: npm run build
 
-      - name: Deploy to GitHub Pages
+      - name: Set up Git Credentials
         run: |
             git config --global user.name "${{ github.actor }}"
             git config --global user.email "${{ github.actor }}@users.noreply.github.com"
             git fetch origin gh-pages
             git checkout gh-pages
 
+      - name: Delete old files
+        run: |
             if [ "${{ github.ref }}" = "refs/heads/release" ]; then
                 find . -maxdepth 1 ! -name 'test' ! -name 'development' ! -name '.' ! -name '..' ! -name 'readme.md' ! -name 'LICENSE' -exec rm -rf {} +
             elif [ "${{ github.ref }}" = "refs/heads/testing" ]; then
@@ -40,6 +45,8 @@ jobs:
                 rm -rf development/*
             fi
 
+      - name: Copy new files
+        run: |
             if [ "${{ github.ref }}" = "refs/heads/release" ]; then
                 cp -r dist/* .
             elif [ "${{ github.ref }}" = "refs/heads/testing" ]; then
@@ -50,6 +57,8 @@ jobs:
                 cp -r dist/* development/
             fi
 
+      - name: Deploy to GitHub Pages
+        run: |
             git add .
             git commit -m "Deploy #${{ github.run_number }} from ${{ github.ref }} branch"
             git push origin gh-pages --force
