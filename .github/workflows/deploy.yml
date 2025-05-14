@@ -10,6 +10,14 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        env:
+          - { branch: release, build_env: production, path: "/" }
+          - { branch: testing, build_env: staging, path: "/test" }
+          - { branch: development, build_env: development, path: "/development" }
+    if: ${{ github.ref_name }} == matrix.env.branch
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -26,41 +34,41 @@ jobs:
         run: npm install
 
       - name: Build the application
-        run: npm run build
+        run: npm run build -- --configuration=${{ matrix.env.build_env }}
 
       - name: Set up Git Credentials
         run: |
-            git config --global user.name "${{ github.actor }}"
-            git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-            git fetch origin gh-pages
-            git checkout gh-pages
+          git config --global user.name "${{ github.actor }}"
+          git config --global user.email "${{ github.actor }}@users.noreply.github.com"
 
-      - name: Delete old files
+      - name: Prepare Git Worktree for gh-pages
         run: |
-            if [ "${{ github.ref }}" = "refs/heads/release" ]; then
-                find . -maxdepth 1 ! -name 'test' ! -name 'development' ! -name '.' ! -name '..' ! -name 'readme.md' ! -name 'LICENSE' -exec rm -rf {} +
-            elif [ "${{ github.ref }}" = "refs/heads/testing" ]; then
-                rm -rf test/*
-            else
-                rm -rf development/*
-            fi
+          git fetch origin gh-pages
+          git worktree add deploy-folder gh-pages
 
-      - name: Copy new files
+      - name: Clean Deployment Directory
         run: |
-            if [ "${{ github.ref }}" = "refs/heads/release" ]; then
-                cp -r dist/* .
-            elif [ "${{ github.ref }}" = "refs/heads/testing" ]; then
-                mkdir -p test
-                cp -r dist/* test/
-            else
-                mkdir -p development
-                cp -r dist/* development/
-            fi
+          target_dir="deploy-folder${{ matrix.env.path }}"
+          mkdir -p "$target_dir"
+          if [ "${{ github.ref }}" = "refs/heads/release" ]; then
+            find deploy-folder -maxdepth 1 -type f ! -name 'README.md' ! -name 'LICENSE' -exec rm -f {} +
+            find deploy-folder -maxdepth 1 -type d ! -name '.' ! -name '..' ! -name 'test' ! -name 'development' -exec rm -rf {} +
+          else
+            rm -rf "$target_dir"/*
+          fi
 
-      - name: Deploy to GitHub Pages
-        uses: dfm/force-push-branch-action@v1.1
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          path: .
-          target-branch: gh-pages
-          commit-message: "Deploy #${{ github.run_number }} from ${{ github.ref }} branch"
+      - name: Copy New Files to Deploy Folder
+        run: |
+          target_dir="deploy-folder${{ matrix.env.path }}"
+          mkdir -p "$target_dir"
+          cp -r dist/* "$target_dir/"
+
+      - name: Commit and Deploy to GitHub Pages
+        working-directory: deploy-folder
+        run: |
+          git add .
+          git commit -m "Deploy #${{ github.run_number }} from ${{ github.ref }} branch - ${{ matrix.env.build_env }}"
+          git push origin gh-pages --force
+
+      - name: Clean Up Worktree
+        run: git worktree remove deploy-folder --force
