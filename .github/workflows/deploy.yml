@@ -54,7 +54,7 @@ jobs:
         run: |
           target_dir="deploy-folder/"
           mkdir -p "$target_dir"
-          find deploy-folder -maxdepth 1 ! -name '.' ! -name '..' ! -name '.git' -exec rm -rf {} +
+          find "$target_dir" -mindepth 1 -not -name '.git' -exec rm -rf {} +
 
       - name: Copy New Files to Deploy Folder
         run: |
