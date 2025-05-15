@@ -66,4 +66,4 @@ jobs:
           GIT_SSH_COMMAND="ssh -i ~/.ssh/deploy_key -o UserKnownHostsFile=~/.ssh/known_hosts" git push git@github.com:${{ github.repository }} gh-pages --force
 
       - name: Clean Up Worktree
-        run: git worktree remove deploy-folder --force
+        run: git worktree remove deploy-folder --force || rm -rf deploy-folder
