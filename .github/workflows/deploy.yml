@@ -25,7 +25,7 @@ jobs:
         run: npm install
 
       - name: Build the application
-        run: npm run build -- --configuration="production"
+        run: npm run build -- --configuration='production'
 
       - name: Set up SSH Key
         env:
@@ -49,14 +49,15 @@ jobs:
         run: |
           target_dir="deploy-folder/"
           mkdir -p "$target_dir"
-          find deploy-folder -maxdepth 1 -type f ! -name 'README.md' ! -name 'LICENSE' -exec rm -f {} +
-          find deploy-folder -maxdepth 1 -type d ! -name '.' ! -name '..' -exec rm -rf {} +
+          find deploy-folder -maxdepth 1 ! -name '.' ! -name '..' -exec rm -rf {} +
 
       - name: Copy New Files to Deploy Folder
         run: |
           target_dir="deploy-folder/"
           mkdir -p "$target_dir"
           cp -r dist/pseudo-code-converter/browser/* "$target_dir/"
+          cp README.md "$target_dir/"
+          cp LICENSE "$target_dir/"
 
       - name: Commit and Deploy to GitHub Pages
         working-directory: deploy-folder
@@ -66,4 +67,4 @@ jobs:
           GIT_SSH_COMMAND="ssh -i ~/.ssh/deploy_key -o UserKnownHostsFile=~/.ssh/known_hosts" git push git@github.com:${{ github.repository }} gh-pages --force
 
       - name: Clean Up Worktree
-        run: git worktree remove deploy-folder --force || rm -rf deploy-folder
+        run: git worktree remove deploy-folder --force
