@@ -56,8 +56,7 @@ jobs:
           target_dir="deploy-folder/"
           mkdir -p "$target_dir"
           cp -r dist/pseudo-code-converter/browser/* "$target_dir/"
-          cp README.md "$target_dir/"
-          cp LICENSE "$target_dir/"
+          cp readme.md LICENSE "$target_dir/"
 
       - name: Commit and Deploy to GitHub Pages
         working-directory: deploy-folder
