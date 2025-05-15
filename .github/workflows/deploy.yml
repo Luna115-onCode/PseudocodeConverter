@@ -50,7 +50,7 @@ jobs:
           target_dir="deploy-folder/"
           mkdir -p "$target_dir"
           find deploy-folder -maxdepth 1 -type f ! -name 'README.md' ! -name 'LICENSE' -exec rm -f {} +
-          find deploy-folder -maxdepth 1 -type d ! -name '.' ! -name '..' ! -name 'test' ! -name 'development' -exec rm -rf {} +
+          find deploy-folder -maxdepth 1 -type d ! -name '.' ! -name '..' -exec rm -rf {} +
 
       - name: Copy New Files to Deploy Folder
         run: |
