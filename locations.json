@@ -1,0 +1,18 @@
+{
+  "buttons": {
+    "convertCode": {
+      "en": "Convert Code",
+      "es": "Convertir Código"
+    }
+  },
+  "settings": {
+    "changeLanguage": {
+      "en": "Change Language",
+      "es": "Cambiar Idioma"
+    },
+    "currentLanguage": {
+      "en": "Current Language",
+      "es": "Idioma Actual"
+    }
+  }
+}
