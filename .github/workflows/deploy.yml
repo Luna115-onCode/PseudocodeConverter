@@ -11,33 +11,33 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Set environment variables
-        id: set-env
-        run: |
-          echo "::set-output name=build_env::$(if [ '${{ github.ref }}' = 'refs/heads/release' ]; then echo 'production'; else echo 'development'; fi)"
-          echo "::set-output name=path::$(if [ '${{ github.ref }}' = 'refs/heads/release' ]; then echo '/'; elif [ '${{ github.ref }}' = 'refs/heads/testing' ]; then echo '/test'; else echo '/development'; fi)"
+    - name: Set environment variables
+      id: set-env
+      run: |
+        echo "::set-output name=build_env::$(if [ '${{ github.ref }}' = 'refs/heads/release' ]; then echo 'production'; else echo 'development'; fi)"
+        echo "::set-output name=path::$(if [ '${{ github.ref }}' = 'refs/heads/release' ]; then echo '/'; elif [ '${{ github.ref }}' = 'refs/heads/testing' ]; then echo '/test'; else echo '/development'; fi)"
 
-      - name: Checkout code
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: latest
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: latest
 
-      - name: Install Angular CLI
-        run: npm install -g @angular/cli
+    - name: Install Angular CLI
+      run: npm install -g @angular/cli
 
-      - name: Install dependencies
-        run: npm install
+    - name: Install dependencies
+      run: npm install
 
-      - name: Build the application
-        run: npm run build -- --configuration=${{ steps.set-env.outputs.build_env }}
+    - name: Build the application
+      run: npm run build -- --configuration=${{ steps.set-env.outputs.build_env }}
 
-      - name: Set up SSH Key
-        env:
+    - name: Set up SSH Key
+      env:
           DEPLOY_KEY: ${{ secrets.DEPLOY_KEY }}
-        run: |
+      run: |
           mkdir -p ~/.ssh
           echo "$DEPLOY_KEY" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
@@ -45,36 +45,36 @@ jobs:
           eval "$(ssh-agent -s)"
           ssh-add ~/.ssh/deploy_key
 
-      - name: Prepare Git Worktree for gh-pages
-        run: |
-          git fetch origin gh-pages
-          git worktree add deploy-folder gh-pages
+    - name: Prepare Git Worktree for gh-pages
+      run: |
+        git fetch origin gh-pages
+        git worktree add deploy-folder gh-pages
 
-      - name: Clean Deployment Directory
-        run: |
-          target_dir="deploy-folder${{ steps.set-env.outputs.path }}"
-          mkdir -p "$target_dir"
-          if [ "${{ github.ref }}" = "refs/heads/release" ]; then
-            find deploy-folder -maxdepth 1 -type f ! -name 'README.md' ! -name 'LICENSE' -exec rm -f {} +
-            find deploy-folder -maxdepth 1 -type d ! -name '.' ! -name '..' ! -name 'test' ! -name 'development' -exec rm -rf {} +
-          else
-            rm -rf "$target_dir"/*
-          fi
+    - name: Clean Deployment Directory
+      run: |
+        target_dir="deploy-folder${{ steps.set-env.outputs.path }}"
+        mkdir -p "$target_dir"
+        if [ "${{ github.ref }}" = "refs/heads/release" ]; then
+          find deploy-folder -maxdepth 1 -type f ! -name 'README.md' ! -name 'LICENSE' -exec rm -f {} +
+          find deploy-folder -maxdepth 1 -type d ! -name '.' ! -name '..' ! -name 'test' ! -name 'development' -exec rm -rf {} +
+        else
+          rm -rf "$target_dir"/*
+        fi
 
-      - name: Copy New Files to Deploy Folder
-        run: |
-          target_dir="deploy-folder${{ steps.set-env.outputs.path }}"
-          mkdir -p "$target_dir"
-          cp -r dist/* "$target_dir/"
+    - name: Copy New Files to Deploy Folder
+      run: |
+        target_dir="deploy-folder${{ steps.set-env.outputs.path }}"
+        mkdir -p "$target_dir"
+        cp -r dist/* "$target_dir/"
 
-      - name: Commit and Deploy to GitHub Pages
-        working-directory: deploy-folder
-        run: |
+    - name: Commit and Deploy to GitHub Pages
+      working-directory: deploy-folder
+      run: |
           git config --global user.name "GitHub Actions"
           git config --global user.email "actions@github.com"
           git add .
           git commit -m "Deploy #${{ github.run_number }} from ${{ github.ref }} branch - ${{ steps.set-env.outputs.build_env }}"
           git push git@github.com:${{ github.repository }} gh-pages --force
 
-      - name: Clean Up Worktree
-        run: git worktree remove deploy-folder --force
+    - name: Clean Up Worktree
+      run: git worktree remove deploy-folder --force
