@@ -49,14 +49,14 @@ jobs:
         run: |
           target_dir="deploy-folder/"
           mkdir -p "$target_dir"
-          find deploy-folder -maxdepth 1 ! -name '.' ! -name '..' -exec rm -rf {} +
+          find deploy-folder -maxdepth 1 ! -name '.' ! -name '..' ! -name '$target_dir/.git' ! -name -exec rm -rf {} +
 
       - name: Copy New Files to Deploy Folder
         run: |
           target_dir="deploy-folder/"
           mkdir -p "$target_dir"
           cp -r dist/pseudo-code-converter/browser/* "$target_dir/"
-          cp readme.md LICENSE "$target_dir/"
+          cp readme.md LICENSE .gitignore "$target_dir/"
 
       - name: Commit and Deploy to GitHub Pages
         working-directory: deploy-folder
