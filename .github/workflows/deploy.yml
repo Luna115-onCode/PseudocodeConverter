@@ -4,19 +4,11 @@ on:
   push:
     branches:
       - release
-      - testing
-      - development
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Set environment variables
-        id: set-env
-        run: |
-          echo "::set-output name=build_env::$(if [ '${{ github.ref }}' = 'refs/heads/release' ]; then echo 'production'; else echo 'development'; fi)"
-          echo "::set-output name=path::$(if [ '${{ github.ref }}' = 'refs/heads/release' ]; then echo '/'; elif [ '${{ github.ref }}' = 'refs/heads/testing' ]; then echo '/test'; else echo '/development'; fi)"
-
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -32,7 +24,7 @@ jobs:
         run: npm install
 
       - name: Build the application
-        run: npm run build -- --configuration=${{ steps.set-env.outputs.build_env }}
+        run: npm run build -- --configuration="production"
 
       - name: Set up SSH Key
         env:
@@ -54,26 +46,22 @@ jobs:
 
       - name: Clean Deployment Directory
         run: |
-          target_dir="deploy-folder${{ steps.set-env.outputs.path }}"
+          target_dir="deploy-folder/"
           mkdir -p "$target_dir"
-          if [ "${{ github.ref }}" = "refs/heads/release" ]; then
-            find deploy-folder -maxdepth 1 -type f ! -name 'README.md' ! -name 'LICENSE' -exec rm -f {} +
-            find deploy-folder -maxdepth 1 -type d ! -name '.' ! -name '..' ! -name 'test' ! -name 'development' -exec rm -rf {} +
-          else
-            rm -rf "$target_dir"/*
-          fi
+          find deploy-folder -maxdepth 1 -type f ! -name 'README.md' ! -name 'LICENSE' -exec rm -f {} +
+          find deploy-folder -maxdepth 1 -type d ! -name '.' ! -name '..' ! -name 'test' ! -name 'development' -exec rm -rf {} +
 
       - name: Copy New Files to Deploy Folder
         run: |
-          target_dir="deploy-folder${{ steps.set-env.outputs.path }}"
+          target_dir="deploy-folder/"
           mkdir -p "$target_dir"
-          cp -r dist/* "$target_dir/"
+          cp -r dist/pseudo-code-converter/browser/* "$target_dir/"
 
       - name: Commit and Deploy to GitHub Pages
         working-directory: deploy-folder
         run: |
           git add .
-          git commit -m "Deploy #${{ github.run_number }} from ${{ github.ref }} branch - ${{ steps.set-env.outputs.build_env }}"
+          git commit -m "Deploy #${{ github.run_number }} from ${{ github.ref }} branch"
           GIT_SSH_COMMAND="ssh -i ~/.ssh/deploy_key -o UserKnownHostsFile=~/.ssh/known_hosts" git push git@github.com:${{ github.repository }} gh-pages --force
 
       - name: Clean Up Worktree
