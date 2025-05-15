@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { ToolsService } from './services/tools.service'
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser'
 import { MatIconModule } from '@angular/material/icon'
@@ -29,6 +29,7 @@ export class AppComponent implements OnInit {
 
   highlightWords(text: string): void {
     text = text.replace(/;/g, ';<br/>')
+    text = text.replace(/:/g, ':<br/>')
     Object.values(this.tools.keywordsDic).forEach((keywordObj: any) => {
       const names = keywordObj.name[this.tools.lang]
       const words = Array.isArray(names) ? names : [names]
@@ -46,7 +47,6 @@ export class AppComponent implements OnInit {
   onInputChange(event: Event): void {
     const target = event.target as HTMLDivElement
     this.inputText = target.textContent ?? ''
-    console.log(this.inputText)
     this.highlightWords(this.inputText)
   }
 
