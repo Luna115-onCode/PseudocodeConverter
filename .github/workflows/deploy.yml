@@ -10,6 +10,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
+      - name: Set environment variables
+        id: set-env
+        run: |
+          echo "::set-output name=build_env::$(if [ '${{ github.ref }}' = 'refs/heads/release' ]; then echo 'production'; else echo 'development'; fi)"
+          echo "::set-output name=path::$(if [ '${{ github.ref }}' = 'refs/heads/release' ]; then echo '/'; elif [ '${{ github.ref }}' = 'refs/heads/testing' ]; then echo '/test'; else echo '/development'; fi)"
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -49,7 +54,7 @@ jobs:
         run: |
           target_dir="deploy-folder/"
           mkdir -p "$target_dir"
-          find deploy-folder -maxdepth 1 ! -name '.' ! -name '..' ! -name '$target_dir/.git' ! -name -exec rm -rf {} +
+          find deploy-folder -maxdepth 1 ! -name '.' ! -name '..' ! -name '.git' -exec rm -rf {} +
 
       - name: Copy New Files to Deploy Folder
         run: |
@@ -62,7 +67,7 @@ jobs:
         working-directory: deploy-folder
         run: |
           git add .
-          git commit -m "Deploy #${{ github.run_number }} from ${{ github.ref }} branch"
+          git commit -m "Deploy #${{ github.run_number }} from ${{ github.ref }} branch - ${{ steps.set-env.outputs.build_env }}"
           GIT_SSH_COMMAND="ssh -i ~/.ssh/deploy_key -o UserKnownHostsFile=~/.ssh/known_hosts" git push git@github.com:${{ github.repository }} gh-pages --force
 
       - name: Clean Up Worktree
