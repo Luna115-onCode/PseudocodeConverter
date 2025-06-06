@@ -28,18 +28,51 @@ export class AppComponent implements OnInit {
   }
 
   highlightWords(text: string): void {
+    const stringPlaceholderPrefix = '__STRING_PLACEHOLDER__'
+    const numberPlaceholderPrefix = '__NUMBER_PLACEHOLDER__'
+
+    text = this.tools.getABSText(text)
     text = text.replace(/;/g, ';<br/>')
     text = text.replace(/:/g, ':<br/>')
-    Object.values(this.tools.keywordsDic).forEach((keywordObj: any) => {
-      const names = keywordObj.name[this.tools.lang]
-      const words = Array.isArray(names) ? names : [names]
-      const color = keywordObj.color
 
-      words.forEach(word => {
-        const regex = new RegExp(`\\b(${word})\\b`, 'gi')
-        text = text.replace(regex, `<span style="color: rgb(${color})">$1</span>`)
+    const formattedText = this.tools.getFormattedCode(text)
+    text = ""
+
+    formattedText.forEach((line) => {
+      let lineText = line.line
+      const stringMatches = [...lineText.matchAll(/"(.*?)"/g)].map(match => match[0])
+      const numberMatches = [...lineText.matchAll(/(?<!")\b\d+(?:\.\d+)?\b(?!")/g)].map(match => match[0])
+
+      stringMatches.forEach((str, index) => {
+          lineText = lineText.replace(str, `${stringPlaceholderPrefix}${index}__`)
       })
+      numberMatches.forEach((str, index) => {
+          lineText = lineText.replace(str, `${numberPlaceholderPrefix}${index}__`)
+      })
+
+      Object.values(this.tools.keywordsDic).forEach((keywordObj: any) => {
+        const names = keywordObj.name[this.tools.lang]
+        const words = Array.isArray(names) ? names : [names]
+        const color = keywordObj.color
+
+        words.forEach(word => {
+          const regex = new RegExp(`\\b(${word})\\b`, 'gi')
+          lineText = lineText.replace(regex, `<span style="color: rgb(${color})">$1</span>`)
+        })
+      })
+
+      stringMatches.forEach((str, index) => {
+          const coloredString = `<span style="color: rgb(255, 0, 0)">${str}</span>`;
+          lineText = lineText.replace(`${stringPlaceholderPrefix}${index}__`, coloredString);
+      })
+      numberMatches.forEach((str, index) => {
+          const coloredString = `<span style="color: rgb(0, 0, 255)">${str}</span>`;
+          lineText = lineText.replace(`${numberPlaceholderPrefix}${index}__`, coloredString);
+      })
+      text += lineText + '<br/>'
+      console.log(line.blockState, line.currentBlock)
     })
+
     this.highlightedText = text
     this.cleanHighlightedText = this.sanitizer.bypassSecurityTrustHtml(this.highlightedText)
   }
