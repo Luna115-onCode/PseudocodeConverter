@@ -1,0 +1,128 @@
+{
+  "while": {
+    "name": {
+      "es": ["cuando", "mientras"],
+      "en": ["while", "when"]
+    },
+    "color": "52, 152, 219"
+  },
+  "elif": {
+    "name": {
+      "es": ["sino si", "por el contrario si", "si no si", "entonces si"],
+      "en": ["else if", "if not", "otherwise if", "if else"]
+    },
+    "color": "243, 156, 18"
+  },
+  "else": {
+    "name": {
+      "es": ["de lo contrario", "entonces", "sino"],
+      "en": ["else", "otherwise", "then"]
+    },
+    "color": "231, 76, 60"
+  },
+  "for": {
+    "name": {
+      "es": ["por cada", "para cada", "para", "por"],
+      "en": ["for each", "for", "by", "each"]
+    },
+    "color": "39, 174, 96"
+  },
+  "break": {
+    "name": {
+      "es": ["romper", "interrumpir", "salir"],
+      "en": ["break", "interrupt", "exit"]
+    },
+    "color": "192, 57, 43"
+  },
+  "continue": {
+    "name": {
+      "es": ["continuar", "seguir", "proseguir", "ignorar"],
+      "en": ["continue", "follow", "proceed", "ignore"]
+    },
+    "color": "211, 84, 0"
+  },
+  "return": {
+    "name": {
+      "es": ["devolver", "regresar", "retornar", "enviar de vuelta", "dar de vuelta"],
+      "en": ["return", "go back", "send back", "give back", "get back"]
+    },
+    "color": "155, 89, 182"
+  },
+  "function": {
+    "name": {
+      "es": ["funcion", "metodo"],
+      "en": ["function", "method"]
+    },
+    "color": "44, 62, 80"
+  },
+  "end": {
+    "name": {
+      "es": ["terminar", "fin", "finalizar"],
+      "en": ["end", "finish"]
+    },
+    "color": "127, 140, 141"
+  },
+  "create": {
+    "name": {
+      "es": ["crear", "iniciar", "hacer", "inicializar"],
+      "en": ["create", "make", "initialize", "init"]
+    },
+    "color": "26, 188, 156"
+  },
+  "set": {
+    "name": {
+      "es": ["establecer", "cambiar", "asignar", "definir", "modificar"],
+      "en": ["set", "change", "assign", "define", "modify"]
+    },
+    "color": "46, 204, 113"
+  },
+  "be": {
+    "name": {
+      "es": ["sea", "es", "son", "este", "estan", "sean"],
+      "en": ["be", "is", "are", "become", "becomes"]
+    },
+    "color": "149, 165, 166"
+  },
+  "greater than": {
+    "name": {
+      "es": ["mayor que", "superior a", "mas que", "mas grande", "mas", "superior"],
+      "en": ["greater than", "more", "bigger", "greater"]
+    },
+    "color": "52, 73, 94"
+  },
+  "less than": {
+    "name": {
+      "es": ["menor que", "inferior a", "menos que", "menos grande", "menos", "inferior"],
+      "en": ["less than", "less", "smaller"]
+    },
+    "color": "142, 68, 173"
+  },
+  "do": {
+    "name": {
+      "es": ["hacer", "realizar", "ejecutar"],
+      "en": ["do", "execute"]
+    },
+    "color": "230, 126, 34"
+  },
+  "write": {
+    "name": {
+      "es": ["escribir", "poner", "imprimir"],
+      "en": ["write", "print", "out"]
+    },
+    "color": "155, 89, 182"
+  },
+  "to": {
+    "name": {
+      "es": ["a", "en"],
+      "en": ["to", "in", "on", "at"]
+    },
+    "color": "241, 196, 15"
+  },
+  "if": {
+    "name": {
+      "es": "si",
+      "en": "if"
+    },
+    "color": "39, 174, 96"
+  }
+}
