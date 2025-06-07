@@ -17,6 +17,7 @@ jobs:
           echo "::set-output name=build_env::$(if [ '${{ github.ref }}' = 'refs/heads/release' ]; then echo 'production'; else echo 'development'; fi)"
           echo "::set-output name=path::$(if [ '${{ github.ref }}' = 'refs/heads/release' ]; then echo '/'; elif [ '${{ github.ref }}' = 'refs/heads/testing' ]; then echo '/test'; else echo '/development'; fi)"
           echo "::set-output name=page_root::$(if [ '${{ github.ref }}' = 'refs/heads/release' ]; then echo '/PseudocodeConverter/'; elif [ '${{ github.ref }}' = 'refs/heads/testing' ]; then echo '/PseudocodeConverter/test/'; else echo '/PseudocodeConverter/development/'; fi)"
+          echo "::set-output name=build_prefix::$(if [ '${{ github.ref }}' = 'refs/heads/release' ]; then echo 'prod'; elif [ '${{ github.ref }}' = 'refs/heads/testing' ]; then echo 'test'; else echo 'dev'; fi)"
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -30,6 +31,21 @@ jobs:
 
       - name: Install dependencies
         run: npm install
+
+      - name: Setup PWA
+        env:
+          build_prefix: ${{ steps.set-env.outputs.build_prefix }}
+        run: |
+          rm -rf public/icons/pwa
+          mkdir -p public/icons/pwa
+          cp .pwa/icons-$build_prefix/pwa/* public/icons/pwa/
+          rm public/manifest.webmanifest
+          cp .pwa/manifest-$build_prefix.webmanifest public/manifest.webmanifest
+          if [ "$build_prefix" = "prod" ]; then
+            cp .pwa/ngsw-config-prod.json ngsw-config.json
+          else
+            cp .pwa/ngsw-config-other.json ngsw-config.json
+          fi
 
       - name: Build the application
         env:
