@@ -5,53 +5,53 @@
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
   "display": "standalone",
-  "scope": "/PseudoCodeConverter/development/",
-  "start_url": "/PseudoCodeConverter/development/",
+  "scope": "/PseudocodeConverter/development/",
+  "start_url": "/PseudocodeConverter/development/",
   "icons": [
     {
-      "src": "/PseudoCodeConverter/development/icons/pwa/icon-72x72.png",
+      "src": "/PseudocodeConverter/development/icons/pwa/icon-72x72.png",
       "sizes": "72x72",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/PseudoCodeConverter/development/icons/pwa/icon-96x96.png",
+      "src": "/PseudocodeConverter/development/icons/pwa/icon-96x96.png",
       "sizes": "96x96",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/PseudoCodeConverter/development/icons/pwa/icon-128x128.png",
+      "src": "/PseudocodeConverter/development/icons/pwa/icon-128x128.png",
       "sizes": "128x128",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/PseudoCodeConverter/development/icons/pwa/icon-144x144.png",
+      "src": "/PseudocodeConverter/development/icons/pwa/icon-144x144.png",
       "sizes": "144x144",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/PseudoCodeConverter/development/icons/pwa/icon-152x152.png",
+      "src": "/PseudocodeConverter/development/icons/pwa/icon-152x152.png",
       "sizes": "152x152",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/PseudoCodeConverter/development/icons/pwa/icon-192x192.png",
+      "src": "/PseudocodeConverter/development/icons/pwa/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/PseudoCodeConverter/development/icons/pwa/icon-384x384.png",
+      "src": "/PseudocodeConverter/development/icons/pwa/icon-384x384.png",
       "sizes": "384x384",
       "type": "image/png",
       "purpose": "maskable any"
     },
     {
-      "src": "/PseudoCodeConverter/development/icons/pwa/icon-512x512.png",
+      "src": "/PseudocodeConverter/development/icons/pwa/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
