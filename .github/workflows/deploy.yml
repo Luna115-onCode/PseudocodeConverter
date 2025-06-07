@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - release
+      - development
+      - testing
 
 jobs:
   deploy:
@@ -14,6 +16,7 @@ jobs:
         run: |
           echo "::set-output name=build_env::$(if [ '${{ github.ref }}' = 'refs/heads/release' ]; then echo 'production'; else echo 'development'; fi)"
           echo "::set-output name=path::$(if [ '${{ github.ref }}' = 'refs/heads/release' ]; then echo '/'; elif [ '${{ github.ref }}' = 'refs/heads/testing' ]; then echo '/test'; else echo '/development'; fi)"
+          echo "::set-output name=page_root::$(if [ '${{ github.ref }}' = 'refs/heads/release' ]; then echo '/PseudocodeConverter/'; elif [ '${{ github.ref }}' = 'refs/heads/testing' ]; then echo '/PseudocodeConverter/test/'; else echo '/PseudocodeConverter/development/'; fi)"
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -29,7 +32,10 @@ jobs:
         run: npm install
 
       - name: Build the application
-        run: npm run build -- --configuration='production' --base-href="/PseudocodeConverter/"
+        env:
+          build_env: ${{ steps.set-env.outputs.build_env }}
+          page_root: ${{ steps.set-env.outputs.page_root }}
+        run: npm run build -- --configuration="$build_env" --base-href="$page_root"
 
       - name: Set up SSH Key
         env:
@@ -50,14 +56,18 @@ jobs:
           git worktree add deploy-folder gh-pages
 
       - name: Clean Deployment Directory
+        env:
+          path: ${{ steps.set-env.outputs.path }}
         run: |
-          target_dir="deploy-folder/"
+          target_dir="deploy-folder$path"
           mkdir -p "$target_dir"
-          find "$target_dir" -mindepth 1 -not -name '.git' -exec rm -rf {} +
+          find "$target_dir" -mindepth 1 -not -name '.git' -not -name 'test' -not -name 'development' -exec rm -rf {} +
 
       - name: Copy New Files to Deploy Folder
+        env:
+          path: ${{ steps.set-env.outputs.path }}
         run: |
-          target_dir="deploy-folder/"
+          target_dir="deploy-folder$path"
           mkdir -p "$target_dir"
           cp -r dist/pseudo-code-converter/browser/* "$target_dir/"
           cp readme.md LICENSE .gitignore "$target_dir/"
