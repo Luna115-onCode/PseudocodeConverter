@@ -15,7 +15,7 @@ jobs:
         id: set-env
         run: |
           echo "::set-output name=build_env::$(if [ '${{ github.ref }}' = 'refs/heads/release' ]; then echo 'production'; else echo 'development'; fi)"
-          echo "::set-output name=path::$(if [ '${{ github.ref }}' = 'refs/heads/release' ]; then echo '/'; elif [ '${{ github.ref }}' = 'refs/heads/testing' ]; then echo '/test'; else echo '/development'; fi)"
+          echo "::set-output name=path::$(if [ '${{ github.ref }}' = 'refs/heads/release' ]; then echo '/app'; elif [ '${{ github.ref }}' = 'refs/heads/testing' ]; then echo '/test'; else echo '/development'; fi)"
           echo "::set-output name=page_root::$(if [ '${{ github.ref }}' = 'refs/heads/release' ]; then echo '/PseudocodeConverter/'; elif [ '${{ github.ref }}' = 'refs/heads/testing' ]; then echo '/PseudocodeConverter/test/'; else echo '/PseudocodeConverter/development/'; fi)"
           echo "::set-output name=build_prefix::$(if [ '${{ github.ref }}' = 'refs/heads/release' ]; then echo 'prod'; elif [ '${{ github.ref }}' = 'refs/heads/testing' ]; then echo 'test'; else echo 'dev'; fi)"
       - name: Checkout code
@@ -41,11 +41,6 @@ jobs:
           cp .pwa/icons-$build_prefix/pwa/* public/icons/pwa/
           rm public/manifest.webmanifest
           cp .pwa/manifest-$build_prefix.webmanifest public/manifest.webmanifest
-          if [ "$build_prefix" = "prod" ]; then
-            cp .pwa/ngsw-config-prod.json ngsw-config.json
-          else
-            cp .pwa/ngsw-config-other.json ngsw-config.json
-          fi
 
       - name: Build the application
         env:
@@ -77,7 +72,7 @@ jobs:
         run: |
           target_dir="deploy-folder$path"
           mkdir -p "$target_dir"
-          find "$target_dir" -mindepth 1 -not -name '.git' -not -name 'test' -not -name 'development' -exec rm -rf {} +
+          find "$target_dir" -mindepth 1 -not -name '.git' -exec rm -rf {} +
 
       - name: Copy New Files to Deploy Folder
         env:
@@ -87,6 +82,9 @@ jobs:
           mkdir -p "$target_dir"
           cp -r dist/pseudo-code-converter/browser/* "$target_dir/"
           cp readme.md LICENSE .gitignore "$target_dir/"
+          if [ $path = "/app" ]; then
+            cp readme.md LICENSE .gitignore "deploy-folder/"
+          fi
 
       - name: Commit and Deploy to GitHub Pages
         working-directory: deploy-folder
