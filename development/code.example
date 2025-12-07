@@ -1,0 +1,10 @@
+crear perros; crear gatos;
+cambiar perros a 5; cambiar gatos a 1;
+
+cuando perros + 10 sea mayor que gatos hacer;
+escribir "Tienes {perros} perros y {gatos} gatos";
+cambiar gatos a gatos + 3;
+escribir "Ahora tienes {gatos} gatos";
+terminar cuando;
+
+escribir "Tienes {gatos} gatos y {perros} perros";

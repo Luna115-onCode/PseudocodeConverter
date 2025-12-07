@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["src/app/app.component.sass"],
+  "sourcesContent": ["body\n  background-color: rgba(255, 255, 255, 0)\n\n.container\n  margin-top: 3%\n  background-color: rgba(255, 255, 255, 0)\n\n.background-white\n  white-space: pre-wrap\n  border: 1px solid #ccc\n  padding: 10px\n  min-height: 100px\n  background-color: antiquewhite\n"],
+  "mappings": ";AAAA;AACE,oBAAA,KAAA,GAAA,EAAA,GAAA,EAAA,GAAA,EAAA;;AAEF,CAAA;AACE,cAAA;AACA,oBAAA,KAAA,GAAA,EAAA,GAAA,EAAA,GAAA,EAAA;;AAEF,CAAA;AACE,eAAA;AACA,UAAA,IAAA,MAAA;AACA,WAAA;AACA,cAAA;AACA,oBAAA;;",
+  "names": []
+}
